@@ -66,9 +66,9 @@ namespace Shazam.Cli.Commands
             var solutionPackageType = $@"/packagetype:{_solutionSettings.SolutionPackageType}";
             var solutionPackageMap = $@"/map:{_solutionSettings.SolutionPackageMapFilePath}";
             var solutionExtractPath = $@"/folder:{_solutionSettings.SolutionExtractPath}";
-            var zip = $@"/zipfile:bin/Debug/{_solutionSettings.SolutionName}.zip";
+            var zip = $@"/zipfile:{_solutionSettings.SolutionExportDirectory}{_solutionSettings.SolutionName}.zip";
             var errorLevel = $@"/errorlevel:{_solutionSettings.ErrorLevel}";
-            var logFile = $@"/l:{_solutionSettings.SolutionExtractPath}/packager.log";
+            var logFile = $@"/l:{_solutionSettings.SolutionExportDirectory}SolutionPackager.log";
 
             var process = new Process
             {
@@ -83,9 +83,6 @@ namespace Shazam.Cli.Commands
                     WorkingDirectory = _solutionSettings.CdsSolutionProjectPath
                 }
             };
-
-            Console.WriteLine(process.StartInfo.Arguments);
-
             process.OutputDataReceived += (sender, data) => Console.WriteLine(data.Data);
             process.ErrorDataReceived += (sender, data) => Console.WriteLine(data.Data);
             process.Start();

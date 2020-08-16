@@ -48,10 +48,11 @@ namespace Shazam.Cli.Commands
 
             Console.WriteLine("Importing solution {0} into Server {1}.", solutionFilePath, _cdsServiceClient.ConnectedOrgFriendlyName);
 
-            var importSolutionRequest = new ImportSolutionRequest()
+            var importSolutionRequest = new ImportSolutionRequest
             {
                 CustomizationFile = data,
-                ImportJobId = importId
+                ImportJobId = importId,
+                PublishWorkflows = true
             };
 
             void Starter() => ProgressReport(importId);
@@ -69,7 +70,7 @@ namespace Shazam.Cli.Commands
                 ProgressCharacter = '_',
                 ProgressBarOnBottom = false
             };
-            var pbar = new ProgressBar(100, "Successfully started import job", options);
+            var pbar = new ProgressBar(100, $"Import Job Started Successfully : {importId}", options);
             while (true)
             {
                 try
@@ -77,8 +78,7 @@ namespace Shazam.Cli.Commands
                     var job = _cdsServiceClient.Retrieve("importjob", (Guid) importId, new ColumnSet("solutionname", "progress"));
                     var progress = Convert.ToDecimal(job["progress"]);
 
-                    pbar.WriteLine($"{progress}%");
-                    pbar.Tick();
+                    pbar.Tick(Convert.ToInt32(job["progress"]));
 
                     if (progress == 100)
                     {
