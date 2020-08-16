@@ -1,7 +1,9 @@
 # A dotNet Core Cli tool for Power Platform
+
 <p align="center">
     <img width="" height="20" src="https://github.com/roshangautam/shazam-framework/workflows/.NET%20Core/badge.svg">
 </p>
+
 This cli tool is part of [Shazam](https://github.com/roshangautam/shazam) framework
 
 ## User Guide
