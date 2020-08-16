@@ -18,8 +18,6 @@ jobs:
       with:
         dotnet-version: 3.1.301
         source-url: https://api.nuget.org/v3/index.json
-      env:
-          NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
     - name: Install dependencies
       run: dotnet restore
     - name: Build
@@ -27,5 +25,5 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Publish Nuget Packages
-      run: dotnet nuget push .\.nupkg\*.nupkg --skip-duplicate --no-symbols true
+      run: dotnet nuget push .\.nupkg\*.nupkg -k ${{secrets.NUGET_API_KEY}} --skip-duplicate --no-symbols true
 
