@@ -18,6 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.301
         source-url: https://api.nuget.org/v3/index.json
+      env:
+          NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
     - name: Install dependencies
       run: dotnet restore
     - name: Build
