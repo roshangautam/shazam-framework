@@ -1,4 +1,4 @@
-name: .NET Core
+name: Unified CICD Pipeline
 
 on:
   push:
