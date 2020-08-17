@@ -26,6 +26,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-    - name: Publish Nuget Packages
+    - name: Publish Packages to Nuget.Org
       run: dotnet nuget push .\.nupkg\*.nupkg -k ${{secrets.NUGET_API_KEY}} --skip-duplicate --no-symbols true
+    - name: Publish Packages to Github
+      run: dotnet nuget push .\.nupkg\*.nupkg -k ${{secrets.GH_TOKEN}} --source https://nuget.pkg.github.com/roshangautam/index.json --skip-duplicate --no-symbols true
 
