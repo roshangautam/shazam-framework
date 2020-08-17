@@ -17,9 +17,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
-        source-url: https://api.nuget.org/v3/index.json
+        source-url: https://nuget.pkg.github.com/roshangautam/index.json
       env:
-          NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
+          NUGET_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
     - name: Install dependencies
       run: dotnet restore
     - name: Build
@@ -27,7 +27,7 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Publish Packages to Nuget.Org
-      run: dotnet nuget push .\.nupkg\*.nupkg -k ${{secrets.NUGET_API_KEY}} --skip-duplicate --no-symbols true
-    - name: Publish Packages to Github
-      run: dotnet nuget push .\.nupkg\*.nupkg -k ${{secrets.GH_TOKEN}} --source https://nuget.pkg.github.com/roshangautam/index.json --skip-duplicate --no-symbols true
+      run: dotnet nuget push .\.nupkg\*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols true
+    - name: Publish Packages to Github Package Repository
+      run: dotnet nuget push .\.nupkg\*.nupkg --skip-duplicate --no-symbols true
 

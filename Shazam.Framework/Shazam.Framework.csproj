@@ -12,6 +12,7 @@
     <Description>A component of shazam framework to establish connections with a power platform environment</Description>
     <Copyright>Copyright @2020 Roshan Gautam</Copyright>
     <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/roshangautam/shazam-framework</RepositoryUrl>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 

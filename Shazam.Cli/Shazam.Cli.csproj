@@ -11,6 +11,7 @@
     <Description>A dotNet Core CLI tool for Power Platform</Description>
     <Copyright>Copyright @2020 Roshan Gautam</Copyright>
     <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/roshangautam/shazam-framework</RepositoryUrl>
     <PackageTags>cds, power-platform, power-apps, dotnet-cli-tool, shazam</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
