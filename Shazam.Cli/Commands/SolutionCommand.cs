@@ -1,5 +1,4 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
-using Shazam.Cli.Commands;
 
 namespace Shazam.Cli.Commands
 {

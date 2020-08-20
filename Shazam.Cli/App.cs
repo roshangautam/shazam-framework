@@ -7,6 +7,8 @@ namespace Shazam.Cli
     [HelpOption("-h|--help")]
     [Subcommand(typeof(SolutionCommand))]
     [Subcommand(typeof(HistoryCommand))]
+    [Subcommand(typeof(WhoAmICommand))]
+    [Subcommand(typeof(PublishCommand))]
     public class App
     {
         public void OnExecute(CommandLineApplication app)

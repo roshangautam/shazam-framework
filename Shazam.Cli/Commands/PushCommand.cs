@@ -6,25 +6,24 @@ using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.PowerPlatform.Cds.Client;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Shazam.Framework;
 using ShellProgressBar;
 
 namespace Shazam.Cli.Commands
 {
-    [Command(Name = "push", Description = "Import unmanaged solution to power platform environment configured in settings.[dev].json")]
-    public class PushCommand
+    [Command(Name = "push", Description = "Import unmanaged solution to power platform environment")]
+    public class PushCommand : CrmCommand
     {
         private readonly ILogger<PushCommand> _logger;
         private readonly SolutionSettings _solutionSettings;
-        private readonly CdsServiceClient _cdsServiceClient;
 
-        public PushCommand(ICrmClientFactory crmClientFactory, ILogger<PushCommand> logger,
-            IOptions<SolutionSettings> solutionSettings)
+        public PushCommand(IOrganizationService organizationService, ILogger<PushCommand> logger,
+            IOptions<SolutionSettings> solutionSettings): base(organizationService)
         {
             _logger = logger;
             _solutionSettings = solutionSettings.Value;
-            _cdsServiceClient = crmClientFactory.Manufacture();
         }
 
         public void OnExecute(CommandLineApplication app)
@@ -46,7 +45,9 @@ namespace Shazam.Cli.Commands
             var data = File.ReadAllBytes(solutionFilePath);
             var importId = Guid.NewGuid();
 
-            Console.WriteLine("Importing solution {0} into Server {1}.", solutionFilePath, _cdsServiceClient.ConnectedOrgFriendlyName);
+            Console.WriteLine("Importing solution {0} into Server {1}.",
+                solutionFilePath,
+                CdsClient.ConnectedOrgFriendlyName);
 
             var importSolutionRequest = new ImportSolutionRequest
             {
@@ -59,8 +60,10 @@ namespace Shazam.Cli.Commands
             var t = new Thread(Starter);
             t.Start();
 
-            _cdsServiceClient.Execute(importSolutionRequest);
-            Console.WriteLine("Solution {0} successfully imported into {1}", solutionFilePath, _cdsServiceClient.ConnectedOrgFriendlyName);
+            CdsClient.Execute(importSolutionRequest);
+            Console.WriteLine("Solution {0} successfully imported into {1}",
+                solutionFilePath,
+                CdsClient.ConnectedOrgFriendlyName);
         }
 
         private void ProgressReport(object importId)
@@ -75,7 +78,7 @@ namespace Shazam.Cli.Commands
             {
                 try
                 {
-                    var job = _cdsServiceClient.Retrieve("importjob", (Guid) importId, new ColumnSet("solutionname", "progress"));
+                    var job = CdsClient.Retrieve("importjob", (Guid) importId, new ColumnSet("solutionname", "progress"));
                     var progress = Convert.ToDecimal(job["progress"]);
 
                     pbar.Tick(Convert.ToInt32(job["progress"]));

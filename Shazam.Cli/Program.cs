@@ -45,8 +45,7 @@ namespace Shazam.Cli
             serviceCollection.Configure<SolutionSettings>(configuration.GetSection("Solution"));
             serviceCollection.Configure<AuthSettings>(configuration.GetSection("Connection"));
 
-            serviceCollection.AddCrmClient();
-            serviceCollection.AddTransient<App>();
+            serviceCollection.AddCdsClient();
         }
     }
 }

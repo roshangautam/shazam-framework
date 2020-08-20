@@ -3,17 +3,14 @@ using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Extensions.Logging;
-using Microsoft.PowerPlatform.Cds.Client;
 using Microsoft.Xrm.Sdk;
-using Shazam.Framework;
 
 namespace Shazam.Cli.Commands
 {
     [Command(Name = "history", Description = "Retrieve audit history of an entity attribute from a power platform environment configured in settings.[dev].json")]
-    public class HistoryCommand
+    public class HistoryCommand: CrmCommand
     {
         private readonly ILogger<PullCommand> _logger;
-        private readonly CdsServiceClient _cdsServiceClient;
 
         [Required]
         [Option("-en|--entity-name", CommandOptionType.SingleValue, Description = "Entity Name")]
@@ -27,10 +24,9 @@ namespace Shazam.Cli.Commands
         [Option("-an|--attribute-name", CommandOptionType.SingleValue, Description = "Attribute Name")]
         public string AttributeName { get; set; }
 
-        public HistoryCommand(ICrmClientFactory crmClientFactory, ILogger<PullCommand> logger)
+        public HistoryCommand(IOrganizationService organizationService, ILogger<PullCommand> logger): base(organizationService)
         {
             _logger = logger;
-            _cdsServiceClient = crmClientFactory.Manufacture();
         }
 
         public void OnExecute(CommandLineApplication app)
@@ -54,7 +50,7 @@ namespace Shazam.Cli.Commands
                 AttributeLogicalName = AttributeName
             };
 
-            if (!(_cdsServiceClient.Execute(req) is RetrieveAttributeChangeHistoryResponse resp))
+            if (!(CdsClient.Execute(req) is RetrieveAttributeChangeHistoryResponse resp))
             {
                 return;
             }
