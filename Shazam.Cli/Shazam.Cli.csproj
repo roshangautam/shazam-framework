@@ -17,7 +17,6 @@
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>56633646-e618-4d74-9682-fdfd34d365e7</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />
