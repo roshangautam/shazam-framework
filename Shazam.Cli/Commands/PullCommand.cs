@@ -41,7 +41,9 @@ namespace Shazam.Cli.Commands
 
         private void ExportSolution()
         {
-            Console.WriteLine($@"Exporting solution from {CdsClient.ConnectedOrgFriendlyName}");
+            Console.WriteLine("Exporting solution {0} to environment {1}.",
+                _solutionSettings.SolutionName,
+                CdsClient.ConnectedOrgFriendlyName);
             var exportSolutionRequest = new ExportSolutionRequest
                 {Managed = false, SolutionName = _solutionSettings.SolutionName};
             var exportSolutionResponse = CdsClient.Execute(exportSolutionRequest) as ExportSolutionResponse;

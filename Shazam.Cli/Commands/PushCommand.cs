@@ -45,15 +45,16 @@ namespace Shazam.Cli.Commands
             var data = File.ReadAllBytes(solutionFilePath);
             var importId = Guid.NewGuid();
 
-            Console.WriteLine("Importing solution {0} into Server {1}.",
-                solutionFilePath,
+            Console.WriteLine("Importing unmanged solution {0} to environment {1}.",
+                _solutionSettings.SolutionName,
                 CdsClient.ConnectedOrgFriendlyName);
 
             var importSolutionRequest = new ImportSolutionRequest
             {
                 CustomizationFile = data,
                 ImportJobId = importId,
-                PublishWorkflows = true
+                PublishWorkflows = true,
+                OverwriteUnmanagedCustomizations = false
             };
 
             void Starter() => ProgressReport(importId);
