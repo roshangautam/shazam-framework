@@ -32,6 +32,4 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
     - name: Publish Packages to Nuget.Org
       run: dotnet nuget push .\.nupkg\*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols true
-    - name: Publish Packages to Github Package Repository
-      run: dotnet nuget push .\.nupkg\*.nupkg --skip-duplicate --no-symbols true
 
