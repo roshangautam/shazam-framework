@@ -9,6 +9,7 @@ namespace Shazam.Cli
     [Subcommand(typeof(HistoryCommand))]
     [Subcommand(typeof(WhoAmICommand))]
     [Subcommand(typeof(PublishCommand))]
+    [Subcommand(typeof(GenerateCommand))]
     public class App
     {
         public void OnExecute(CommandLineApplication app)

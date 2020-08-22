@@ -5,10 +5,8 @@ using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.PowerPlatform.Cds.Client;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
-using Shazam.Framework;
 using ShellProgressBar;
 
 namespace Shazam.Cli.Commands
@@ -30,12 +28,35 @@ namespace Shazam.Cli.Commands
         {
             try
             {
+                DeleteSolution();
                 ImportSolution();
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
             }
+        }
+
+        private void DeleteSolution()
+        {
+            var queryImportedSolution = new QueryExpression
+            {
+                EntityName = "solution",
+                ColumnSet = new ColumnSet("solutionid", "friendlyname"),
+                Criteria = new FilterExpression()
+            };
+            queryImportedSolution.Criteria.AddCondition("uniquename", ConditionOperator.Equal, _solutionSettings.SolutionName);
+            var importedSolution = CdsClient.RetrieveMultiple(queryImportedSolution);
+
+            if (importedSolution.Entities == null || importedSolution.Entities.Count <= 0)
+            {
+                return;
+            }
+
+            var solution = importedSolution.Entities[0];
+            CdsClient.Delete("solution", (Guid)solution["solutionid"]);
+
+            Console.WriteLine("Deleted the {0} solution.", solution["friendlyname"]);
         }
 
         private void ImportSolution()
@@ -54,7 +75,9 @@ namespace Shazam.Cli.Commands
                 CustomizationFile = data,
                 ImportJobId = importId,
                 PublishWorkflows = true,
-                OverwriteUnmanagedCustomizations = false
+                OverwriteUnmanagedCustomizations = true,
+                ConvertToManaged = false,
+                SkipProductUpdateDependencies = false
             };
 
             void Starter() => ProgressReport(importId);
@@ -74,17 +97,17 @@ namespace Shazam.Cli.Commands
                 ProgressCharacter = '_',
                 ProgressBarOnBottom = false
             };
-            var pbar = new ProgressBar(100, $"Import Job Started Successfully : {importId}", options);
+            var pbar = new ProgressBar(100, $"\t Import Job Id : {importId}\t Connected : {CdsClient.ConnectedOrgFriendlyName}", options);
             while (true)
             {
                 try
                 {
-                    var job = CdsClient.Retrieve("importjob", (Guid) importId, new ColumnSet("solutionname", "progress"));
+                    var job = CdsClient.Retrieve("importjob", (Guid) importId, new ColumnSet("solutionname", "progress", "completedon"));
                     var progress = Convert.ToDecimal(job["progress"]);
-
+                    var completed = job.Attributes.ContainsKey("completedon") ? job["completedon"] : null;
                     pbar.Tick(Convert.ToInt32(job["progress"]));
 
-                    if (progress == 100)
+                    if (progress == 100 || completed != null)
                     {
                         return;
                     }
